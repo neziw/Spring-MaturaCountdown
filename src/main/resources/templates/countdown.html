@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Licznik do rozpoczęcia matury 2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes gradientAnimation {
+            0% { background-position: 0 50%; }
+            25% { background-position: 50% 50%; }
+            50% { background-position: 100% 50%; }
+            75% { background-position: 50% 50%; }
+            100% { background-position: 0 50%; }
+        }
+
+        .animated-gradient {
+            background: linear-gradient(
+                    -45deg,
+                    #3B82F6,   /* blue-600 */
+                    #60A5FA,   /* blue-400 */
+                    #34D399,   /* emerald-400 */
+                    #FACC15,   /* yellow-400 */
+                    #EF4444,   /* red-500 */
+                    #F472B6,   /* pink-400 */
+                    #A78BFA    /* purple-400 */
+            );
+            background-size: 500% 500%;
+            animation: gradientAnimation 20s ease infinite;
+        }
+    </style>
+    <script>
+        function updateCountdown() {
+            const eventTime = Number(document.getElementById("event-time").dataset.timestamp);
+            const now = new Date().getTime();
+            const timeLeft = eventTime - now;
+            if (timeLeft <= 0) {
+                document.getElementById("countdown").innerHTML = "Wydarzenie już się rozpoczęło!";
+                return;
+            }
+            const months = Math.floor(timeLeft / (1000 * 60 * 60 * 24 * 30));
+            const days = Math.floor((timeLeft % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+            const milliseconds = timeLeft % 1000;
+            document.getElementById("countdown").innerHTML =
+                `<div class="flex justify-center space-x-2">
+                    <span class="font-bold">${months}</span><span class="text-gray-600">mies.</span>
+                    <span class="font-bold">${days}</span><span class="text-gray-600">dni</span>
+                    <span class="font-bold">${hours}</span><span class="text-gray-600">godz.</span>
+                    <span class="font-bold">${minutes}</span><span class="text-gray-600">min.</span>
+                    <span class="font-bold">${seconds}</span><span class="text-gray-600">sek.</span>
+                    <span class="font-bold">${milliseconds}</span><span class="text-gray-600">ms</span>
+                </div>`;
+            setTimeout(updateCountdown, 50);
+        }
+    </script>
+</head>
+<body onload="updateCountdown()"
+      class="min-h-screen flex items-center justify-center p-4 animated-gradient">
+<div class="text-center p-8 bg-white shadow-xl rounded-xl w-full max-w-2xl backdrop-blur-sm bg-opacity-90">
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-3">Licznik do Matury 2025</h1>
+    <div class="mb-6">
+        <p class="text-lg md:text-xl text-gray-600 font-medium italic">
+            Data rozpoczęcia:
+            <span class="text-blue-600 font-semibold not-italic" th:text="${formattedDate}"></span>
+        </p>
+    </div>
+    <div id="countdown" class="text-xl md:text-2xl font-mono text-gray-700 whitespace-nowrap overflow-x-auto px-4">
+        Ładowanie...
+    </div>
+    <span id="event-time" th:data-timestamp="${eventTimestamp}" class="hidden"></span>
+</div>
+</body>
+</html>
